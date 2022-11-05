@@ -71,7 +71,7 @@ int main() {
 
     // Calls and plays Audio 
 
-    Sound sound = LoadSound ("resources/audio/sound.mp4");
+    Sound sound = LoadSound ("resources/audio/sound.wav");
 
 
 
