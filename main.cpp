@@ -47,8 +47,8 @@ int main() {
     Rectangle kingPinRec;
     kingPinRec.width =  kingPin.width;
     kingPinRec.height = kingPin.height;
-    kingPinRec.x = 0;
-    kingPinRec.y = 0; 
+    kingPinRec.x = 0/2;
+    kingPinRec.y = 0/2; 
     Vector2 kingPinPos;
     kingPinPos.x = screenWidth - kingPinRec.width;
     kingPinPos.y = screenHeight -  kingPinRec.height;
@@ -71,7 +71,7 @@ int main() {
 
     // Calls and plays Audio 
 
-    Sound sound = LoadSound ("resources/audio/sound.wav");
+    Sound sound = LoadSound ("resources/audio/sound.mp4");
 
 
 
