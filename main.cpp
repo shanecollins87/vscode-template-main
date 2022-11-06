@@ -1,13 +1,12 @@
 #include "raylib.h"
 
+
 int main() {
     const int screenWidth{1920};
     const int screenHeight{1090};
     const int width{50};
     const int height{50};
     int gravity (1);
-
-
     int posY{screenHeight-height};
     int velocity{-10};
 
@@ -138,7 +137,7 @@ UnloadTexture(kingPin);
 // Unload  Sound - good practice to unload better for memeroy
 UnloadSound(sound);
 
-// Deinit - x will close, 
+// De- initilization - x will close, 
 CloseAudioDevice();
 CloseWindow();
 

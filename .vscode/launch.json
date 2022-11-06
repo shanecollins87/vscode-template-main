@@ -5,14 +5,6 @@
       "version": "0.2.0",
       "configurations": [
         {
-          "name": "(Windows) Attach",
-          "type": "cppvsdbg",
-          "request": "attach",
-        },
-
-
-
-        {
           "name": "Debug",
           "type": "cppdbg",
           "request": "launch",
