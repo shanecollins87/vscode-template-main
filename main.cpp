@@ -1,5 +1,11 @@
 #include "raylib.h" // Calls the raylib Libary or in my case sometimes does it's own thing and calls it
 
+// Types and Structures Definition
+//------------------------------------------------------------------------------------------
+//typedef enum GameScreen { LOGO = 0, PRESCREEN, PLAYGAME, GAMEOVER } GameScreen;
+
+
+
 
 int main() {
     const int screenWidth{1920};
@@ -14,8 +20,17 @@ int main() {
     InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window / named screen 
     InitAudioDevice(); // Calls the Audio you have selected for this piece - 
 
+ //GameScreen currentScreen = LOGO;
+ 
+ // TODO: Initialize all required variables and load all required data here!
 
-// Audio
+//int framesCounter = 0;          // Useful to count frames
+ 
+ 
+ 
+ //  Load - Elements you wish to load on screen
+
+ // Audio
 
     // Loads desired Audio 
 
@@ -28,10 +43,6 @@ int main() {
     PlayMusicStream(music);
     music.looping = false;
     bool pause = false; // Desired Audio paused
-
-
-
-
 
     
     //  Load - Elements you wish to load on screen
@@ -86,40 +97,107 @@ int main() {
 
 
 
-
-
-
 // Main Game Loop
 
 // Update - Insert main variables here
 
+switch(currentScreen)
+        {
+            case LOGO:
+            {
+                // TODO: Update LOGO screen variables here!
+
+                framesCounter++;    // Count frames
+
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
+                if (framesCounter > 120)
+                {
+                    currentScreen = PRESCREEN;
+                }
+            } break;
+            case PRESCREEN:
+            {
+                // TODO: Update TITLE screen variables here!
+
+                // Press enter to change to PLAYGAME screen
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
+                {
+                    currentScreen = PLAYGAME;
+                }
+            } break;
+            case PLAYGAME:
+            {
+                // TODO: Update GAMEPLAY screen variables here!
+
+                // Press enter to change to GAMEOVER screen
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
+                {
+                    currentScreen = GAMEOVER;
+                }
+            } break;
+            case GAMEOVER:
+            {
+                // TODO: Update GAMEOVER screen variables here!
+
+                // Press enter to return to PRESCREEN screen
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
+                {
+                    currentScreen = PRESCREEN;
+                }
+            } break;
+            default: break;
+        }
+//----------------------------------------------------------------------------------
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-minute
+       
         while(!WindowShouldClose()){ // Informs the program that if there is no intention to close the window it should stay open, i.e not hitting a close button or Esc key etc. whats in the loop will run
+
     BeginDrawing();
-    DrawTextureRec(scarfy, scarfyRec, scarfyPos, WHITE);
-    DrawTextureRec(bg, bgRec, bgPos, WHITE);
-    DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
-    DrawTextureRec(kingPin, kingPinRec, kingPinPos, WHITE);
-    DrawRectangle(screenWidth/2, posY, width, height, RED);
-    DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
+    ClearBackground(RAYWHITE);
 
- 
+ switch(currentScreen)
+            {
+                case PRESCREEN:
+                {
+                    // TODO: Draw SPIDERMAN LOGO on a black bg here.
 
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
+                    DrawText("Spider-Man: Into the Spider-verse", 20, 20, 40, RED); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
+                    // Calls and draws the Miles Morales Spiderman Logo;
+                     Texture2D milesLogo = LoadTexture ("resources/milesLogo.png");
+                     Rectangle milesLogoRec;
+                     milesLogoRec.width =  bg.width/2;
+                     milesLogoRec.height = bg.height;
+                     milesLogoRec.x = 0;
+                     milesLogoRec.y = 0; 
+                     Vector2 milesLogoPos;
+                     milesLogoPos.x = screenWidth/4 - milesLogoRec.width/4;
+                     milesLogoPos.y = screenHeight -  milesLogoRec.height;
 
+                } break;
+                case PRESCREEN:
+                {
+                    // TODO: Draw PRESCREEN screen here - Splash screen 
 
-   
+                     //DrawTextureRec(scarfy, scarfyRec, scarfyPos, WHITE);
+                     //DrawRectangle(screenWidth/2, posY, width, height, RED);
+                     DrawTextureRec(bg, bgRec, bgPos, WHITE);
+                     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
+                     DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
 
-      // If the SPACE key is pressed desired Audio / .wav file will play Pause/Resume .wav file playing
-    if(IsKeyPressed(KEY_SPACE)) 
-    {
+     //Audio
+
+     // If the SPACE key is pressed desired Audio / .wav file will play Pause/Resume .wav file playing
+     if(IsKeyPressed(KEY_SPACE)) 
+     {
          pause = !pause;
 
         PlaySound(trainsound);
         if (pause) Pausetrainsound(sound);
         else Resumeintrosoundm(sound);
 
-    }
+     }
      // If the Enter key is pressed stop one .wav and play desired .wav file 
     if(IsKeyPressed(KEY_Enter)) 
     {
@@ -127,6 +205,23 @@ int main() {
         PlaySound(leapoffaithsound);
 
     }
+                   
+
+    } break;
+    case GAMEOVER:
+                {
+                    // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                    DrawTextureRec(kingPin, kingPinRec, kingPinPos, WHITE);
+                    DrawText("PLAY AGAIN?", 120, 220, 20, RED);
+
+                } break;
+                default: break;
+            }
+
+
+
+   
 
 
 
@@ -149,7 +244,7 @@ int main() {
     velocity += gravity;
 
     
-    ClearBackground(RAYWHITE);
+    //ClearBackground(RAYWHITE);
     DrawTextureV(kingPin, (Vector2) {screenWidth/1, screenHeight/1}, WHITE);
     EndDrawing();
     
