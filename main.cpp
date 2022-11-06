@@ -1,4 +1,4 @@
-#include "raylib.h"
+#include "raylib.h" // Calls the raylib Libary or in my case sometimes does it's own thing and calls it
 
 
 int main() {
@@ -11,13 +11,32 @@ int main() {
     int velocity{-10};
 
 
-    InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window/ screen
-    InitAudioDevice(); //Calls the Audio you have selected for this piece
+    InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window / named screen 
+    InitAudioDevice(); // Calls the Audio you have selected for this piece - 
+
+
+// Audio
+
+    // Loads desired Audio 
+
+    Sound introsound = LoadSound ("resources/audio/introsound.wav");
+    Sound trainsound = LoadSound ("resources/audio/trainsound.wav");
+    Sound leapoffaithsound = LoadSound ("resources/audio/leappffaithsound.wav");
+
+    Music music = LoadMusicStream("resources/audio/introsound.wav"); // Plays intro sound without prompt from user input, i.e. no key pressed to start
+    SetSoundVolume(music, 0.2f);
+    PlayMusicStream(music);
+    music.looping = false;
+    bool pause = false; // Desired Audio paused
+
+
+
+
 
     
     //  Load - Elements you wish to load on screen
 
-    // Visuals
+    // Visual Elements
 
 // Calls and draws the Bg short for Background;
     Texture2D bg = LoadTexture ("resources/trainstation_Bg.png");
@@ -66,37 +85,50 @@ int main() {
 
 
 
-// Audio
-
-    // Calls and plays Audio 
-
-    Sound sound = LoadSound ("resources/audio/sound.wav");
 
 
 
 
+// Main Game Loop
+
+// Update - Insert main variables here
 
 
-// Update
-
-
-
-    SetTargetFPS(60);
-        while(!WindowShouldClose()){
+    SetTargetFPS(60); // Set our game to run at 60 frames-per-minute
+        while(!WindowShouldClose()){ // Informs the program that if there is no intention to close the window it should stay open, i.e not hitting a close button or Esc key etc. whats in the loop will run
     BeginDrawing();
     DrawTextureRec(scarfy, scarfyRec, scarfyPos, WHITE);
     DrawTextureRec(bg, bgRec, bgPos, WHITE);
     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
     DrawTextureRec(kingPin, kingPinRec, kingPinPos, WHITE);
     DrawRectangle(screenWidth/2, posY, width, height, RED);
+    DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
 
-    // If the SPACE key is pressed Audio / sound will play
+ 
+
+
+
+   
+
+      // If the SPACE key is pressed desired Audio / .wav file will play Pause/Resume .wav file playing
     if(IsKeyPressed(KEY_SPACE)) 
     {
+         pause = !pause;
 
-        PlaySound(sound);
+        PlaySound(trainsound);
+        if (pause) Pausetrainsound(sound);
+        else Resumeintrosoundm(sound);
 
     }
+     // If the Enter key is pressed stop one .wav and play desired .wav file 
+    if(IsKeyPressed(KEY_Enter)) 
+    {
+        StopSound(introsound);
+        PlaySound(leapoffaithsound);
+
+    }
+
+
 
 // If the F key is pressed toggle to Full Screen
     if(IsKeyPressed(KEY_F)) 
@@ -117,7 +149,7 @@ int main() {
     velocity += gravity;
 
     
-    ClearBackground(WHITE);
+    ClearBackground(RAYWHITE);
     DrawTextureV(kingPin, (Vector2) {screenWidth/1, screenHeight/1}, WHITE);
     EndDrawing();
     
@@ -128,18 +160,21 @@ const int windowHeight{500};
 const int windowHeight{400};
 */
 
-// Unload  Visuals - good practice to unload better for memeroy
+// Unload  Visuals - good practice to unload visual data - better for memory
 UnloadTexture(scarfy);
 UnloadTexture(bg);
 UnloadTexture(milesLogo);
 UnloadTexture(kingPin);
 
-// Unload  Sound - good practice to unload better for memeroy
-UnloadSound(sound);
+// Unload  Sound - good practice to unload sound data  -  better for memory
+UnloadSound(introsound);
+UnloadSound(trainsound);
+UnloadSound(leapoffaithsound);
+
 
 // De- initilization - x will close, 
-CloseAudioDevice();
-CloseWindow();
+CloseAudioDevice(); // Closes Audio device
+CloseWindow(); // Closes window and OpenGL context
 
-return 0;
+return 0; // We return to Zero
 }
