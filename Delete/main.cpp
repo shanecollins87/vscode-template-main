@@ -143,7 +143,7 @@ switch(currentScreen)
         while(!WindowShouldClose()){ // Informs the program that if there is no intention to close the window it should stay open, i.e not hitting a close button or Esc key etc. whats in the loop will run
 
     BeginDrawing();
-    ClearBackground(RAYWHITE);
+    ClearBackground(WHITE);
 
  switch(currentScreen)
             {
