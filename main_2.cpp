@@ -1,9 +1,12 @@
 #include "raylib.h" // Calls the raylib Libary or in my case sometimes does it's own thing and calls it
-//#include <iostream>
+#define NUM_FRAMES  3       // Number of frames (rectangles) for the button sprite texture
+
+//#include <iostream> //std::cout<<"logostate"<<framesCounter<<std::endl;
+
+
 // Types and Structures Definition
 //------------------------------------------------------------------------------------------
-typedef enum GameScreen { LOGO = 0, PRESCREEN = 1, PLAYGAME = 2, FALLING = 3, GAMEOVER = 4 } GameScreen;
-
+typedef enum GameScreen { LOGO = 0, PRESCREEN = 1,SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
 
 
 
@@ -13,7 +16,6 @@ int main() {
     const int width{0};
     const int height{0};
     int gravity (1);
-    int posX{screenWidth-width};
     int posY{screenHeight-height};
     int velocity{-10};
     float framewidth = (float)(screenWidth);
@@ -39,12 +41,13 @@ int framesCounter = 0;          // Useful to count frames
     Sound introsound = LoadSound ("resources/audio/introsound.wav"); // (String to Load Sounds/ Wav files required for Game)
     Sound trainsound = LoadSound ("resources/audio/trainsound.wav");
     Sound leapoffaithsound = LoadSound ("resources/audio/leapoffaithsound.wav");
-
+    Sound fxButton = LoadSound ("resources/audio/fxButton.wav");
     Music music = LoadMusicStream("resources/audio/introsound.wav"); // Plays intro sound without prompt from user input, i.e. no key pressed to start
     SetSoundVolume(introsound, 0.2f);
     PlayMusicStream(music);
-    music.looping = false;
+    music.looping = true;
     bool pause = false; // Desired Audio paused
+    //float timePlayed = 0.0f;
 
     
     //  Load - Elements you wish to load on screen
@@ -160,16 +163,17 @@ switch(currentScreen)
         {
             case LOGO:
             {
-                // TODO: Update LOGO screen variables here!
+                // TODO: Update SCENEDIVIDER screen variables here!
 
                 framesCounter++;    // Count frames
-//std::cout<<"logostate"<<framesCounter<<std::endl;
+
                 // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
                 if (framesCounter > 20)
                 {
                     currentScreen = PRESCREEN;
                     
                 }
+                   
             } break;
 
             case PRESCREEN:
@@ -177,11 +181,43 @@ switch(currentScreen)
                 // TODO: Update TITLE screen variables here!
 //std::cout<<"CurrentScreenstate"<<std::endl;
                 // Press enter to change to PLAYGAME screen
-                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) //
                 {
                     currentScreen = PLAYGAME;
                 }
+
+    // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
+                    if(IsKeyPressed(KEY_ENTER)) 
+               {
+                      pause = !pause;
+
+                      PlaySound(introsound);
+                      if (pause) PauseMusicStream(music);
+                      else PlayMusicStream(music);
+
+               }
+                   
+
+
             } break;
+
+    case SCENEDIVIDER_1:
+            {
+                // TODO: Update LOGO screen variables here!
+
+                framesCounter++;    // Count frames
+
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
+                if (framesCounter > 20)
+                {
+                    currentScreen = LOGO;
+                    
+                }
+                   
+            } break;
+
+
+
             case PLAYGAME:
             {
                 // TODO: Update GAMEPLAY screen variables here!
@@ -227,14 +263,63 @@ switch(currentScreen)
 
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
                     DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, MAROON); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
-                    DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
+                  
                     DrawText("Play Game", 815, 950, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
                     
                     // Calls and draws the Miles Morales Spiderman Logo;
                     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
+//--------------------------------------------------------------------------------------
+//  raylib [textures] example - sprite button - Example used https://www.raylib.com/examples.html
+    
+    // DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
+     DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
+     DrawText("Play Game", 815, 950, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
+
+    // Define frame rectangle for drawing
+    float frameHeight = (float)redButton.height/NUM_FRAMES;
+    Rectangle sourceRec = { 0, 0, (float)redButton.width, frameHeight };
+
+    // Define button bounds on screen
+    Rectangle btnBounds = { screenWidth/2.0f - redButton.width/2.0f, screenHeight/2.0f - redButton.height/NUM_FRAMES/2.0f, (float)redButton.width, frameHeight };
+
+    int btnState = 0;               // Button state: 0-NORMAL, 1-MOUSE_HOVER, 2-PRESSED
+    bool btnAction = false;         // Button action should be activated
+
+    Vector2 mousePoint = { 0.0f, 0.0f };
+
+    //----------------------------------------------------------------------------------
+        mousePoint = GetMousePosition();
+        btnAction = false;
+
+        // Check button state
+        if (CheckCollisionPointRec(mousePoint, btnBounds))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) btnState = 2;
+            else btnState = 1;
+
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) btnAction = true;
+        }
+        else btnState = 0;
+
+        if (btnAction)
+        {
+           PlaySound(fxButton);
+
+          //TODO: Any desired action
+         }
+
+        // Calculate button frame rectangle to draw depending on button state
+        sourceRec.y = btnState*frameHeight;
+        //----------------------------------------------------------------------------------
+
+  
+    //--------------------------------------------------------------------------------------
+
+
+
 
                     // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
-                    if(IsKeyPressed(KEY_N)) 
+                    if(IsKeyPressed(KEY_SPACE)) 
                {
                       pause = !pause;
 
@@ -310,11 +395,13 @@ switch(currentScreen)
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
                     DrawTexture(kingpinGameOver, 0, 0, RED);
-                   // DrawTextureRec(kingpinGameOver, kingpinGameOverRec, kingpinGameOverPos, RED);
                     DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
                     DrawText("GAME OVER", 567, 650, 125, WHITE);
                     DrawText("PLAY AGAIN?", 725, 937, 50, RED);
 
+                    // Audio
+                    
+         
                 } break;
                 default: break;
             }
@@ -376,6 +463,8 @@ UnloadTexture(spidermanFall);
 UnloadSound(introsound);
 UnloadSound(trainsound);
 UnloadSound(leapoffaithsound);
+UnloadSound(fxButton);
+UnloadMusicStream(music);
 
 
 // De- initilization - x will close, 
