@@ -1,24 +1,26 @@
 #include "raylib.h" // Calls the raylib Libary or in my case sometimes does it's own thing and calls it
 #define NUM_FRAMES  3       // Number of frames (rectangles) for the button sprite texture
 
+
 //#include <iostream> //std::cout<<"logostate"<<framesCounter<<std::endl;
 
 
 // Types and Structures Definition
 //------------------------------------------------------------------------------------------
-typedef enum GameScreen { LOGO = 0, PRESCREEN = 1,SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
+typedef enum GameScreen { LOGO = 0, PRESCREEN = 1, SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
 
 
 
 int main() {
     const int screenWidth{1920};
-    const int screenHeight{1090};
-    const int width{0};
+    const int screenHeight{1080};
     const int height{0};
     int gravity (1);
     int posY{screenHeight-height};
     int velocity{-10};
     float framewidth = (float)(screenWidth);
+    Font GetFontDefault(void);
+
 
 
     InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window / named screen 
@@ -29,10 +31,12 @@ int main() {
  // TODO: Initialize all required variables and load all required data here!
 
 int framesCounter = 0;          // Useful to count frames
- 
- 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  
  //  Load - Elements you wish to load on screen
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  // Audio
 
@@ -49,32 +53,43 @@ int framesCounter = 0;          // Useful to count frames
     bool pause = false; // Desired Audio paused
     //float timePlayed = 0.0f;
 
-    
-    //  Load - Elements you wish to load on screen
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------   
 
-    // Visual Elements
+    // Visual Elements  -  Load - Elements you wish to load on screen
 
 // Calls and draws the Bg short for Background;
-    Texture2D bg = LoadTexture ("resources/trainstation_Bg.png"); //(String to Load Sounds/ Wav files required for Game)
+    Texture2D bg = LoadTexture ("resources/trainstation_Bg.png"); //(String to Load the likes of .png files required for Game)
     Rectangle bgRec;
-    bgRec.width =  bg.width/1;
+    bgRec.width =  bg.width;
     bgRec.height = bg.height;
     bgRec.x = 0;
     bgRec.y = 0; 
     Vector2 bgPos;
-    bgPos.x = screenWidth/2 - bgRec.width/2;
-    bgPos.y = screenHeight -  bgRec.height;
+    bgPos.x = screenWidth - bgRec.width;
+    bgPos.y = screenHeight - bgRec.height;
+
 
 // Calls and draws the Miles Morales Spiderman Logo;
     Texture2D milesLogo = LoadTexture ("resources/milesLogo.png");
     Rectangle milesLogoRec;
-    milesLogoRec.width =  bg.width;
-    milesLogoRec.height = bg.height;
+    milesLogoRec.width =  milesLogo.width;
+    milesLogoRec.height = milesLogo.height;
     milesLogoRec.x = 0/4;
     milesLogoRec.y = 0/4; 
     Vector2 milesLogoPos;
     milesLogoPos.x = screenWidth/2 - milesLogoRec.width/2;
     milesLogoPos.y = screenHeight -  milesLogoRec.height;
+
+    // Calls and draws the Spiderman Logo;
+    Texture2D spiderLogo2 = LoadTexture ("resources/spiderLogo2.png");
+    Rectangle spiderLogo2Rec;
+    spiderLogo2Rec.width =  spiderLogo2.width;
+    spiderLogo2Rec.height = spiderLogo2.height;
+    spiderLogo2Rec.x = 0/4;
+    spiderLogo2Rec.y = 0/4; 
+    Vector2 spiderLogo2Pos;
+    spiderLogo2Pos.x = screenWidth/2 - spiderLogo2Rec.width/2;
+    spiderLogo2Pos.y = screenHeight -  spiderLogo2Rec.height;
 
 // Calls and draws The King Pin;
     Texture2D kingPin = LoadTexture ("resources/kingPin.png");
@@ -147,7 +162,7 @@ int framesCounter = 0;          // Useful to count frames
    // spidermanFall .x = screenWidth - spidermanFallRec.width;
    // spidermanFall .y = screenHeight - spidermanFallRec.height;
   
-
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Main Game Loop
 
@@ -179,38 +194,38 @@ switch(currentScreen)
             case PRESCREEN:
             {
                 // TODO: Update TITLE screen variables here!
-//std::cout<<"CurrentScreenstate"<<std::endl;
+
                 // Press enter to change to PLAYGAME screen
                 if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) //
                 {
-                    currentScreen = PLAYGAME;
+                    currentScreen = SCENEDIVIDER_1;
                 }
 
-    // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
+    // Calls and plays the fxButton Audio - short cricket type sound, lets user know itsbeen clicked;
                     if(IsKeyPressed(KEY_ENTER)) 
                {
                       pause = !pause;
 
-                      PlaySound(introsound);
+                      PlaySound(fxButton);
                       if (pause) PauseMusicStream(music);
                       else PlayMusicStream(music);
 
                }
-                   
-
+               
+        
 
             } break;
 
-    case SCENEDIVIDER_1:
+            case SCENEDIVIDER_1:
             {
                 // TODO: Update LOGO screen variables here!
 
                 framesCounter++;    // Count frames
 
-                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
-                if (framesCounter > 20)
+                // Wait for 2 seconds (40 frames) before jumping to PRESCREEN 
+                if (framesCounter > 40)
                 {
-                    currentScreen = LOGO;
+                    currentScreen = PLAYGAME;
                     
                 }
                    
@@ -221,13 +236,19 @@ switch(currentScreen)
             case PLAYGAME:
             {
                 // TODO: Update GAMEPLAY screen variables here!
-//std::cout<<"PLAYGAME"<<std::endl;
-                // Press enter to change to GAMEOVER screen
+
+                // Press enter to change to FALLING screen
+                //if (framesCounter > 40)
+
                 if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
                 {
+
                     currentScreen = FALLING;
                 }
             } break;
+
+           
+
                case FALLING:
             {
                 // TODO: Update GAMEPLAY screen variables here!
@@ -262,11 +283,10 @@ switch(currentScreen)
                     // TODO: Draw SPIDERMAN LOGO on a black bg here.
 
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
-                    DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, MAROON); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
-                  
-                    DrawText("Play Game", 815, 950, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
-                    
-                    // Calls and draws the Miles Morales Spiderman Logo;
+                   // DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour White - Decided to use offical Logo
+                
+                    // Calls and draws the Miles Morales Spiderman Logos;
+                    DrawTextureRec(spiderLogo2, spiderLogo2Rec, spiderLogo2Pos, WHITE); // Official Logo / Title
                     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
 //--------------------------------------------------------------------------------------
 //  raylib [textures] example - sprite button - Example used https://www.raylib.com/examples.html
@@ -330,7 +350,7 @@ switch(currentScreen)
                }
                    
                  
-                  
+                
 
                 
                 } break; 
@@ -338,35 +358,31 @@ switch(currentScreen)
                 {
                     // TODO: Draw PRESCREEN screen here - Splash screen 
 
-                     
-                     DrawTextureRec(bg, bgRec, bgPos, WHITE);
-                     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
-                     DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
-                     
+                     //DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
+                    // DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
 
-     //Audio
+                    
+                    DrawTextureRec(bg, bgRec, bgPos, WHITE);
+                    
+                 
+                
+                      
+                //Audio
 
-     // If the SPACE key is pressed desired Audio / .wav file will play Pause/Resume .wav file playing
-     if(IsKeyPressed(KEY_SPACE)) 
-     {
-         pause = !pause;
+                  // If the SPACE key is pressed desired Audio / .wav file will play Pause/Resume .wav file playing
+                  if(IsKeyPressed(KEY_SPACE)) 
+                  {              
+                  
+                    pause = !pause;
 
-        PlaySound(trainsound);
-        if (pause) PauseMusicStream(music);
-        else PlayMusicStream(music);
+                     PlaySound(trainsound);
+                     if (pause) PauseMusicStream(music);
+                     else PlayMusicStream(music);
+       
 
-     }
-     // If the Enter key is pressed stop one .wav and play desired .wav file 
-    if(IsKeyPressed(KEY_ENTER)) 
-    {
-        StopSound(introsound);
-        PlaySound(leapoffaithsound);
-        PlaySound(leapoffaithsound);
-        if (pause) PauseMusicStream(music);
-        else PlayMusicStream(music);
 
-    }
-     } break; 
+
+                } break; 
                 case FALLING:
                 {
                     // TODO: Draw PRESCREEN screen here - Splash screen 
@@ -385,7 +401,7 @@ switch(currentScreen)
                       PlaySound(leapoffaithsound);
                       if (pause) PauseMusicStream(music);
                       else PlayMusicStream(music);
-               }      
+                    
 
 
     } break;
@@ -406,7 +422,7 @@ switch(currentScreen)
                 default: break;
             }
 
-;
+
 
    
 
@@ -434,8 +450,9 @@ switch(currentScreen)
     //ClearBackground(RAYWHITE);
     DrawTextureV(kingPin, (Vector2) {screenWidth/1, screenHeight/1}, WHITE);
     EndDrawing();
-    
-}
+ //----------------------------------------------------------------------------------
+    }
+ }
 
 /* constant - fixed not changeable great for Window Height / width 
 const int windowHeight{500};
@@ -445,6 +462,7 @@ const int windowHeight{400};
 // Unload  Visuals - good practice to unload visual data - better for memory
 
 UnloadTexture(bg);
+
 UnloadTexture(milesLogo);
 UnloadTexture(kingPin);
 UnloadTexture(kingpinGameOver);
@@ -452,12 +470,16 @@ UnloadTexture(redButton);
 UnloadTexture(blankButton);
 UnloadTexture(cityScene);
 UnloadTexture(spidermanFall);
+UnloadTexture(spiderLogo2);
+ 
 
 
 
+//--------------------------------------------------------------------------------------
 
 //StopSoundMulti();       // We must stop the buffer pool before unloading
 
+//--------------------------------------------------------------------------------------
 
 // Unload  Sound - good practice to unload sound data  -  better for memory
 UnloadSound(introsound);
@@ -465,14 +487,15 @@ UnloadSound(trainsound);
 UnloadSound(leapoffaithsound);
 UnloadSound(fxButton);
 UnloadMusicStream(music);
-
+ 
 
 // De- initilization - x will close, 
 CloseAudioDevice(); // Closes Audio device
 CloseWindow(); // Closes window and OpenGL context
 
 return 0; // We return to Zero
+//--------------------------------------------------------------------------------------
 
-
-         }
-          
+            
+                }
+}
