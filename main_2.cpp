@@ -1,44 +1,55 @@
+/*******************************************************************************************
+*
+*  CA1 - Raylib Application - SoftwareEngineering_D00189801_ShaneCollins
+*
+********************************************************************************************/
+
+
+
+
 #include "raylib.h" // Calls the raylib Libary or in my case sometimes does it's own thing and calls it
 #define NUM_FRAMES  3       // Number of frames (rectangles) for the button sprite texture
-
 
 //#include <iostream> //std::cout<<"logostate"<<framesCounter<<std::endl;
 
 
 // Types and Structures Definition
 //------------------------------------------------------------------------------------------
-typedef enum GameScreen { LOGO = 0, PRESCREEN = 1, SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
+typedef enum GameScreen { LOGO = 0, PRESCREEN = 1,SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
 
 
 
 int main() {
     const int screenWidth{1920};
     const int screenHeight{1080};
+    const int width{0};
     const int height{0};
     int gravity (1);
     int posY{screenHeight-height};
     int velocity{-10};
-    float framewidth = (float)(screenWidth);
-    Font GetFontDefault(void);
-
+  
+    //float framewidth = (float)(screenWidth);
+    //Font GetFontDefault(void);
 
 
     InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window / named screen 
-    InitAudioDevice(); // Calls the Audio you have selected for this piece - 
+    InitAudioDevice(); // Calls and initialises the Audio I have selected for this piece - 
 
     GameScreen currentScreen = LOGO;
  
  // TODO: Initialize all required variables and load all required data here!
 
 int framesCounter = 0;          // Useful to count frames
-
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+ //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  
  //  Load - Elements you wish to load on screen
 
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  // Audio
+
+ //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Loads desired Audio 
 
@@ -46,16 +57,19 @@ int framesCounter = 0;          // Useful to count frames
     Sound trainsound = LoadSound ("resources/audio/trainsound.wav");
     Sound leapoffaithsound = LoadSound ("resources/audio/leapoffaithsound.wav");
     Sound fxButton = LoadSound ("resources/audio/fxButton.wav");
+    Sound deadspiderman = LoadSound ("resources/audio/deadspiderman.wav");
     Music music = LoadMusicStream("resources/audio/introsound.wav"); // Plays intro sound without prompt from user input, i.e. no key pressed to start
     SetSoundVolume(introsound, 0.2f);
     PlayMusicStream(music);
-    music.looping = true;
+    music.looping = false;
     bool pause = false; // Desired Audio paused
     //float timePlayed = 0.0f;
 
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------   
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Visual Elements  -  Load - Elements you wish to load on screen
+    // Visual Elements
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Calls and draws the Bg short for Background;
     Texture2D bg = LoadTexture ("resources/trainstation_Bg.png"); //(String to Load the likes of .png files required for Game)
@@ -74,8 +88,8 @@ int framesCounter = 0;          // Useful to count frames
     Rectangle milesLogoRec;
     milesLogoRec.width =  milesLogo.width;
     milesLogoRec.height = milesLogo.height;
-    milesLogoRec.x = 0/4;
-    milesLogoRec.y = 0/4; 
+    milesLogoRec.x = 0;
+    milesLogoRec.y = 0; 
     Vector2 milesLogoPos;
     milesLogoPos.x = screenWidth/2 - milesLogoRec.width/2;
     milesLogoPos.y = screenHeight -  milesLogoRec.height;
@@ -85,8 +99,8 @@ int framesCounter = 0;          // Useful to count frames
     Rectangle spiderLogo2Rec;
     spiderLogo2Rec.width =  spiderLogo2.width;
     spiderLogo2Rec.height = spiderLogo2.height;
-    spiderLogo2Rec.x = 0/4;
-    spiderLogo2Rec.y = 0/4; 
+    spiderLogo2Rec.x = 0;
+    spiderLogo2Rec.y = 0; 
     Vector2 spiderLogo2Pos;
     spiderLogo2Pos.x = screenWidth/2 - spiderLogo2Rec.width/2;
     spiderLogo2Pos.y = screenHeight -  spiderLogo2Rec.height;
@@ -96,8 +110,8 @@ int framesCounter = 0;          // Useful to count frames
     Rectangle kingPinRec;
     kingPinRec.width =  kingPin.width;
     kingPinRec.height = kingPin.height;
-    kingPinRec.x = 0/4;
-    kingPinRec.y = 0/4; 
+    kingPinRec.x = 0;
+    kingPinRec.y = 0; 
     Vector2 kingPinPos;
     kingPinPos.x = screenWidth - kingPinRec.width;
     kingPinPos.y = screenHeight -  kingPinRec.height;
@@ -145,8 +159,6 @@ int framesCounter = 0;          // Useful to count frames
     citySceneRec.y = 0; 
     Vector2 cityScenePos;
     cityScenePos.x = screenWidth - citySceneRec.width;
-    cityScenePos.x = screenWidth - citySceneRec.width;
-    cityScenePos.x = screenWidth - citySceneRec.width;
     cityScenePos.y = screenHeight -  citySceneRec.height;
   
    // Calls and draws spidermanFall Image;
@@ -159,12 +171,25 @@ int framesCounter = 0;          // Useful to count frames
     Vector2 spidermanFallPos;
     spidermanFallPos.x = screenWidth - spidermanFallRec.width;
     spidermanFallPos.y = screenHeight -  spidermanFallRec.height;
-   // spidermanFall .x = screenWidth - spidermanFallRec.width;
-   // spidermanFall .y = screenHeight - spidermanFallRec.height;
+   
+
+    // Calls and draws spidermanGameOver Image;
+    Texture2D spidermanGameOver = LoadTexture ("resources/spidermanGameOver.png");
+    Rectangle spidermanGameOverRec;
+    spidermanGameOverRec.width =  spidermanGameOver.width;
+    spidermanGameOverRec.height = spidermanGameOver.height;
+    spidermanGameOverRec.x = 0;
+    spidermanGameOverRec.y = 0; 
+    Vector2 spidermanGameOverPos;
+    spidermanGameOverPos.x = screenWidth - spidermanGameOverRec.width;
+    spidermanGameOverPos.y = screenHeight -  spidermanGameOverRec.height;
+  
   
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Main Game Loop
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Update - Insert main variables here
 
@@ -172,7 +197,11 @@ int framesCounter = 0;          // Useful to count frames
        
         while(!WindowShouldClose()){ // Informs the program that if there is no intention to close the window it should stay open, i.e not hitting a close button or Esc key etc. whats in the loop will run
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 //  Game / Scene Logic Begin at LOGO - move logically in order given end Game Over 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 switch(currentScreen)
         {
@@ -182,8 +211,8 @@ switch(currentScreen)
 
                 framesCounter++;    // Count frames
 
-                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
-                if (framesCounter > 20)
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN/ splash screen 
+                if (framesCounter > 120)
                 {
                     currentScreen = PRESCREEN;
                     
@@ -195,37 +224,38 @@ switch(currentScreen)
             {
                 // TODO: Update TITLE screen variables here!
 
-                // Press enter to change to PLAYGAME screen
-                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) //
-                {
-                    currentScreen = SCENEDIVIDER_1;
-                }
-
-    // Calls and plays the fxButton Audio - short cricket type sound, lets user know itsbeen clicked;
+            // Calls and plays the chosen core Audio - Pheilean - Do You Know;
                     if(IsKeyPressed(KEY_ENTER)) 
                {
                       pause = !pause;
 
-                      PlaySound(fxButton);
+                      PlaySound(introsound);
                       if (pause) PauseMusicStream(music);
                       else PlayMusicStream(music);
 
                }
-               
-        
+
+                // Press enter to change to PLAYGAME screen
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) //
+                {
+                    currentScreen = PLAYGAME;
+                }
+
+                   
+
 
             } break;
 
-            case SCENEDIVIDER_1:
+    case SCENEDIVIDER_1:
             {
                 // TODO: Update LOGO screen variables here!
 
                 framesCounter++;    // Count frames
 
-                // Wait for 2 seconds (40 frames) before jumping to PRESCREEN 
-                if (framesCounter > 40)
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
+                if (framesCounter > 120)
                 {
-                    currentScreen = PLAYGAME;
+                    currentScreen = LOGO;
                     
                 }
                    
@@ -237,27 +267,52 @@ switch(currentScreen)
             {
                 // TODO: Update GAMEPLAY screen variables here!
 
-                // Press enter to change to FALLING screen
-                //if (framesCounter > 40)
-
+                // Press enter to change to GAMEOVER screen
                 if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
                 {
-
                     currentScreen = FALLING;
                 }
+
+                  // Calls and plays the chosen Audio - trainsound
+
+                    if(IsKeyPressed(KEY_SPACE)) 
+               {
+                      pause = !pause;
+
+                      PlaySound(trainsound);
+                      if (pause) PauseMusicStream(music);
+                      else PlayMusicStream(music);
+
+               }
+
+
             } break;
-
-           
-
                case FALLING:
             {
                 // TODO: Update GAMEPLAY screen variables here!
-                //std::cout<<"PLAYGAME"<<std::endl;
+             
+             
                 // Press enter to change to GAMEOVER screen
                 if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP))
                 {
                     currentScreen = GAMEOVER;
                 }
+
+
+                  // Calls and plays the chosen Audio - leapoffaith
+
+                    if(IsKeyPressed(KEY_ENTER)) 
+               {
+                      pause = !pause;
+
+                      PlaySound(leapoffaithsound);
+                      if (pause) PauseMusicStream(music);
+                      else PlayMusicStream(music);
+
+               }
+
+
+
             } break;
             case GAMEOVER:
             {
@@ -282,18 +337,29 @@ switch(currentScreen)
                 {
                     // TODO: Draw SPIDERMAN LOGO on a black bg here.
 
-                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
-                   // DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour White - Decided to use offical Logo
+                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
+             
                 
                     // Calls and draws the Miles Morales Spiderman Logos;
                     DrawTextureRec(spiderLogo2, spiderLogo2Rec, spiderLogo2Pos, WHITE); // Official Logo / Title
                     DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
-//--------------------------------------------------------------------------------------
-//  raylib [textures] example - sprite button - Example used https://www.raylib.com/examples.html
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //  Redundant Code - I developed the code further and made this
+
+                   // DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, MAROON); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//  raylib [textures] example - sprite button - Example used and sourced from - https://www.raylib.com/examples.html 
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     
     // DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
      DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
-     DrawText("Play Game", 815, 950, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
+     DrawText("Play Game", 815, 957, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
 
     // Define frame rectangle for drawing
     float frameHeight = (float)redButton.height/NUM_FRAMES;
@@ -333,10 +399,10 @@ switch(currentScreen)
         //----------------------------------------------------------------------------------
 
   
-    //--------------------------------------------------------------------------------------
+   
+                //Audio
 
-
-
+                    PlayMusicStream(music);
 
                     // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
                     if(IsKeyPressed(KEY_SPACE)) 
@@ -350,7 +416,7 @@ switch(currentScreen)
                }
                    
                  
-                
+                  
 
                 
                 } break; 
@@ -358,13 +424,10 @@ switch(currentScreen)
                 {
                     // TODO: Draw PRESCREEN screen here - Splash screen 
 
-                     //DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
-                    // DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
+                 //Visuals
 
+                     DrawTextureRec(bg, bgRec, bgPos, WHITE);
                     
-                    DrawTextureRec(bg, bgRec, bgPos, WHITE);
-                    
-                 
                 
                       
                 //Audio
@@ -379,10 +442,32 @@ switch(currentScreen)
                      if (pause) PauseMusicStream(music);
                      else PlayMusicStream(music);
        
+ 
+                  }
 
 
+     // If the Enter key is pressed stop one .wav and play desired .wav file 
+    if(IsKeyPressed(KEY_ENTER)) 
+    {
+        StopSound(introsound);
+        PlaySound(leapoffaithsound);
+        PlaySound(leapoffaithsound);
+        if (pause) PauseMusicStream(music);
+        else PlayMusicStream(music);
 
-                } break; 
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //  Redundant Code - I developed the code further and made this
+
+                   // DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
+                   // DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    
+     } break; 
                 case FALLING:
                 {
                     // TODO: Draw PRESCREEN screen here - Splash screen 
@@ -390,7 +475,7 @@ switch(currentScreen)
                      
                      DrawTextureRec(cityScene, citySceneRec, cityScenePos, WHITE);
                      DrawTextureRec(spidermanFall, spidermanFallRec, spidermanFallPos, WHITE);
-                     DrawText("FALLING", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
+                    
                    
 
                        // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
@@ -401,28 +486,72 @@ switch(currentScreen)
                       PlaySound(leapoffaithsound);
                       if (pause) PauseMusicStream(music);
                       else PlayMusicStream(music);
-                    
+               }      
+
+
+               
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //  Redundant Code - I developed the code further and made this
+
+                   //  DrawText("FALLING", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
     } break;
     case GAMEOVER:
                 {
-                    // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
+
+                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                     framesCounter++;    // Count frames
+
+                // Wait for 1 seconds (60 frames) before jumping to PRESCREEN  - Game is set at 60 FPS
+                if (framesCounter >60)
+                {
+                     // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                    DrawTextureRec(spidermanGameOver, spidermanGameOverRec, spidermanGameOverPos, WHITE);
+                    DrawText("GAME OVER", 650, 950, 100, WHITE);
+                    
+                    
+                }
+                if (framesCounter >120)
+                {
+                     // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
                     DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
                     DrawTexture(kingpinGameOver, 0, 0, RED);
                     DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
                     DrawText("GAME OVER", 567, 650, 125, WHITE);
-                    DrawText("PLAY AGAIN?", 725, 937, 50, RED);
+                    DrawText("PLAY AGAIN?", 725, 925, 50, RED);
+                    
+                }
+                    
 
                     // Audio
                     
+                    
+                   
+
+                     // Calls and plays the King Pin Audio - deadspiderman Clip;
+                    if(IsKeyPressed(KEY_SPACE)) 
+               {
+                      pause = !pause;
+
+                      PlaySound(deadspiderman);
+                      if (pause) PauseMusicStream(music);
+                      else PlayMusicStream(music);
+               }     
          
+
+
+
+
                 } break;
                 default: break;
             }
 
-
+;
 
    
 
@@ -450,9 +579,8 @@ switch(currentScreen)
     //ClearBackground(RAYWHITE);
     DrawTextureV(kingPin, (Vector2) {screenWidth/1, screenHeight/1}, WHITE);
     EndDrawing();
- //----------------------------------------------------------------------------------
-    }
- }
+    
+}
 
 /* constant - fixed not changeable great for Window Height / width 
 const int windowHeight{500};
@@ -462,7 +590,6 @@ const int windowHeight{400};
 // Unload  Visuals - good practice to unload visual data - better for memory
 
 UnloadTexture(bg);
-
 UnloadTexture(milesLogo);
 UnloadTexture(kingPin);
 UnloadTexture(kingpinGameOver);
@@ -470,32 +597,29 @@ UnloadTexture(redButton);
 UnloadTexture(blankButton);
 UnloadTexture(cityScene);
 UnloadTexture(spidermanFall);
-UnloadTexture(spiderLogo2);
- 
+UnloadTexture(spidermanGameOver);
 
 
 
-//--------------------------------------------------------------------------------------
 
 //StopSoundMulti();       // We must stop the buffer pool before unloading
 
-//--------------------------------------------------------------------------------------
 
-// Unload  Sound - good practice to unload sound data  -  better for memory
+// Unload  Sound - good practice to unload sound data  -  better for memory.
 UnloadSound(introsound);
 UnloadSound(trainsound);
 UnloadSound(leapoffaithsound);
+UnloadSound(deadspiderman);
 UnloadSound(fxButton);
 UnloadMusicStream(music);
- 
+
 
 // De- initilization - x will close, 
 CloseAudioDevice(); // Closes Audio device
 CloseWindow(); // Closes window and OpenGL context
 
 return 0; // We return to Zero
-//--------------------------------------------------------------------------------------
 
-            
-                }
-}
+
+         }
+          
