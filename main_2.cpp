@@ -15,27 +15,45 @@
 
 // Types and Structures Definition
 //------------------------------------------------------------------------------------------
-typedef enum GameScreen { LOGO = 0, PRESCREEN = 1,SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen;
+typedef enum GameScreen { LOGO = 0, PRESCREEN = 1,SCENEDIVIDER_1 = 2, PLAYGAME = 3, FALLING = 4, GAMEOVER = 5 } GameScreen; // Game enumerator - Scene order 0 to 5
 
 
 
-int main() {
-    const int screenWidth{1920};
-    const int screenHeight{1080};
-    const int width{0};
-    const int height{0};
-    int gravity (1);
-    int posY{screenHeight-height};
-    int velocity{-10};
+int main() { // Initializing main - Integers - whole number i.e not a fraction below is being declared
+    const int screenWidth{1920};        // - Constant Integer  screen Width is to be 1920 
+    const int screenHeight{1080};       // - Constant Integer  screen Height is to be 1080 
+    const int height{0};                // - Constant Integer  height = 0 
+    int gravity (1);                    // - Integer  gravity = 1
+    int posY{screenHeight-height};      // - Integer  Y height 
+    int velocity{10};                   // - Integer velocity set at 10  
+   
   
-    //float framewidth = (float)(screenWidth);
-    //Font GetFontDefault(void);
+    //Font GetFontDefault(void); - unused
 
 
     InitWindow(screenWidth, screenHeight, "CA1 Raylib Application_D00189801"); //Calls the window / named screen 
     InitAudioDevice(); // Calls and initialises the Audio I have selected for this piece - 
 
-    GameScreen currentScreen = LOGO;
+    Vector2 squarePosition = { (float)screenWidth/2, (float)screenHeight/2 }; // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // Define the camera to look into our 2d world -  sourced - raylib [core] example - 2d camera found via: https://www.raylib.com/examples.html
+
+    Camera2D camera = { 0 };
+    
+    camera.offset = (Vector2){ screenWidth/1.0f, screenHeight/1.0f };  //Camera offset uses floats they have a decimal point
+    camera.rotation = 0.0f;     //camera rotation is a float 
+    camera.zoom = 1.0f;         // camera zoom is a float 
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    GameScreen currentScreen = LOGO; // tells the machine starting current screen
+
+
+
+
  
  // TODO: Initialize all required variables and load all required data here!
 
@@ -53,7 +71,7 @@ int framesCounter = 0;          // Useful to count frames
 
     // Loads desired Audio 
 
-    Sound introsound = LoadSound ("resources/audio/introsound.wav"); // (String to Load Sounds/ Wav files required for Game)
+    Sound introsound = LoadSound ("resources/audio/introsound.wav"); // Brackets = Sting (String to Load Sounds/ Wav files required for Game)
     Sound trainsound = LoadSound ("resources/audio/trainsound.wav");
     Sound leapoffaithsound = LoadSound ("resources/audio/leapoffaithsound.wav");
     Sound fxButton = LoadSound ("resources/audio/fxButton.wav");
@@ -65,6 +83,16 @@ int framesCounter = 0;          // Useful to count frames
     bool pause = false; // Desired Audio paused
     //float timePlayed = 0.0f;
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-  sourced - raylib [core] example -  Background scrolling found via: https://www.raylib.com/examples.html
+    
+    Texture2D midground = LoadTexture("resources/spidermanFall.png");  //Draws Miles Falling image
+    float scrollingMid = 0.0f;
+   
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 
+
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Visual Elements
@@ -73,7 +101,7 @@ int framesCounter = 0;          // Useful to count frames
 
 // Calls and draws the Bg short for Background;
     Texture2D bg = LoadTexture ("resources/trainstation_Bg.png"); //(String to Load the likes of .png files required for Game)
-    Rectangle bgRec;
+    Rectangle bgRec;  // Declare a rectangle, similar example used in class -  Scafy, sets the height size amd position - This is repeated down as far as line 213 
     bgRec.width =  bg.width;
     bgRec.height = bg.height;
     bgRec.x = 0;
@@ -197,15 +225,36 @@ int framesCounter = 0;          // Useful to count frames
        
         while(!WindowShouldClose()){ // Informs the program that if there is no intention to close the window it should stay open, i.e not hitting a close button or Esc key etc. whats in the loop will run
 
+        if (IsKeyDown(KEY_RIGHT)) squarePosition.x += 2.0f; // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+        if (IsKeyDown(KEY_LEFT)) squarePosition.x -= 2.0f; // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+        if (IsKeyDown(KEY_UP)) squarePosition.y -= 2.0f; // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+        if (IsKeyDown(KEY_DOWN)) squarePosition.y += 2.0f; // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+
+        // if not, texture should be draw more than two times for scrolling effect
+   //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       
+        
+       
+      // Used to get Miles to scroll across screen // sourced -raylib [textures] example - Background scrolling found via: https://www.raylib.com/examples.html
+        scrollingMid -= 1.0f; // in this case just Spiderman is scrolling using a float
+      
+
+        // NOTE: Texture is scaled twice its size, so it sould be considered on scrolling
+       
+        if (scrollingMid <= -midground.width*2) scrollingMid = 2; //
+       
+        
+
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //  Game / Scene Logic Begin at LOGO - move logically in order given end Game Over 
+// Concept sourced - raylib [core] example - basic screen manager found via: https://www.raylib.com/examples.html and developed to suit my projects needs
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 switch(currentScreen)
         {
-            case LOGO:
+            case LOGO: // tells the computer which screen it's currently on  this concept repeats down as far as line 378 
             {
                 // TODO: Update SCENEDIVIDER screen variables here!
 
@@ -214,7 +263,7 @@ switch(currentScreen)
                 // Wait for 2 seconds (120 frames) before jumping to PRESCREEN/ splash screen 
                 if (framesCounter > 120)
                 {
-                    currentScreen = PRESCREEN;
+                    currentScreen = PRESCREEN; // tells the computer which screen it should switch to
                     
                 }
                    
@@ -225,7 +274,7 @@ switch(currentScreen)
                 // TODO: Update TITLE screen variables here!
 
             // Calls and plays the chosen core Audio - Pheilean - Do You Know;
-                    if(IsKeyPressed(KEY_ENTER)) 
+                    if(IsKeyPressed(KEY_ENTER))  // Else If statement, if the Enter key is pressed by the user sound is paused and other plays
                {
                       pause = !pause;
 
@@ -236,7 +285,7 @@ switch(currentScreen)
                }
 
                 // Press enter to change to PLAYGAME screen
-                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) //
+                if (IsKeyPressed(KEY_ENTER) || IsGestureDetected(GESTURE_TAP)) // Wen Enter key is pressed switch to Playgame screen
                 {
                     currentScreen = PLAYGAME;
                 }
@@ -252,7 +301,7 @@ switch(currentScreen)
 
                 framesCounter++;    // Count frames
 
-                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN 
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN  - this was added so the switch wouldn't be instant - tells machine to delay action by desired amount
                 if (framesCounter > 120)
                 {
                     currentScreen = LOGO;
@@ -338,15 +387,19 @@ switch(currentScreen)
                     // TODO: Draw SPIDERMAN LOGO on a black bg here.
 
                      DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a Black BG
-             
+
                 
                     // Calls and draws the Miles Morales Spiderman Logos;
                     DrawTextureRec(spiderLogo2, spiderLogo2Rec, spiderLogo2Pos, WHITE); // Official Logo / Title
-                    DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
+                    DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE); // Draws Miles spraypainted version
+
+
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                //  Redundant Code - I developed the code further and made this
+                //  Redundant Code - I developed the code further and made this redundant left it in to show development
 
                    // DrawText("Spider-Man: Into the Spider-verse", 280, 80, 80, MAROON); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
 
@@ -357,8 +410,8 @@ switch(currentScreen)
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     
-    // DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
-     DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE);
+    
+     DrawTextureRec(redButton, redButtonRec, redButtonPos, WHITE); // Draws the red button texture required for the scene
      DrawText("Play Game", 815, 957, 50, WHITE); // Content TITLE In this case it's Spider-Man: Into the Spider-verse, colour red
 
     // Define frame rectangle for drawing
@@ -404,7 +457,7 @@ switch(currentScreen)
 
                     PlayMusicStream(music);
 
-                    // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
+                    // Calls and plays the Miles Falling Audio - Leap of Faith Clip; - this concept is explained previously see line 277
                     if(IsKeyPressed(KEY_SPACE)) 
                {
                       pause = !pause;
@@ -426,7 +479,7 @@ switch(currentScreen)
 
                  //Visuals
 
-                     DrawTextureRec(bg, bgRec, bgPos, WHITE);
+                     DrawTextureRec(bg, bgRec, bgPos, WHITE);  // Draws the intended image/ texture to the size position and tint required
                     
                 
                       
@@ -438,7 +491,7 @@ switch(currentScreen)
                   
                     pause = !pause;
 
-                     PlaySound(trainsound);
+                     PlaySound(trainsound); // individual train sound is required
                      if (pause) PauseMusicStream(music);
                      else PlayMusicStream(music);
        
@@ -459,7 +512,7 @@ switch(currentScreen)
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                //  Redundant Code - I developed the code further and made this
+                //  Redundant Code - I developed the code further and made this redundant, I left it in to show development purposes
 
                    // DrawTextureRec(milesLogo, milesLogoRec, milesLogoPos, WHITE);
                    // DrawText("Press Enter to Play Game", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game
@@ -471,11 +524,18 @@ switch(currentScreen)
                 case FALLING:
                 {
                     // TODO: Draw PRESCREEN screen here - Splash screen 
-
                      
-                     DrawTextureRec(cityScene, citySceneRec, cityScenePos, WHITE);
-                     DrawTextureRec(spidermanFall, spidermanFallRec, spidermanFallPos, WHITE);
-                    
+                      DrawTextureRec(cityScene, citySceneRec, cityScenePos, WHITE); //Draws in the city Scene
+
+                     // allows user input Arrow keys to move circle
+                     DrawCircleV(squarePosition, 10, BLACK); // sourced - raylib [core] example - Keyboard input found via: https://www.raylib.com/examples.html
+         
+
+            //Draw midground image twice - Pallarlax bg / <Miles falling image - this is used for Miles falling scene
+            DrawTextureEx(midground, (Vector2){ scrollingMid, 90 }, 0.0f, 2.0f, WHITE);
+            DrawTextureEx(midground, (Vector2){ midground.width*2 + scrollingMid, 20 }, 4.0f, 4.0f, BLUE);
+
+
                    
 
                        // Calls and plays the Miles Falling Audio - Leap of Faith Clip;
@@ -492,9 +552,12 @@ switch(currentScreen)
                
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                //  Redundant Code - I developed the code further and made this
+                //  Redundant Code - I developed the code further and made this redundant, I left it in to show development purposes
 
                    //  DrawText("FALLING", 200, 220, 20, BLACK); // Informs player/ user to press enter to Start Game 
+                   //DrawTextureRec(cityScene, citySceneRec, cityScenePos, WHITE);
+                 //DrawTextureRec(spidermanFall, spidermanFallRec, spidermanFallPos, WHITE);
+
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -502,28 +565,29 @@ switch(currentScreen)
     case GAMEOVER:
                 {
 
-                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                     DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); // Draws a blank Black Screen
                      framesCounter++;    // Count frames
 
-                // Wait for 1 seconds (60 frames) before jumping to PRESCREEN  - Game is set at 60 FPS
-                if (framesCounter >60)
-                {
-                     // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
-                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
-                    DrawTextureRec(spidermanGameOver, spidermanGameOverRec, spidermanGameOverPos, WHITE);
-                    DrawText("GAME OVER", 650, 950, 100, WHITE);
-                    
-                    
-                }
+                // Wait for 2 seconds (120 frames) before jumping to PRESCREEN  - Game is set at 60 FPS
                 if (framesCounter >120)
                 {
                      // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
-                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK);
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); //Draws a black rectangle to the size of the screen 
+                    DrawTextureRec(spidermanGameOver, spidermanGameOverRec, spidermanGameOverPos, WHITE); //Draws spiderman game over image 
+                    DrawText("GAME OVER", 650, 950, 100, WHITE); //Draws text white tint game over and the position on the x and y coordinates  
+                    
+                    
+                }
+
+                if (framesCounter >120)
+                {
+                     // TODO: Draw GAMEOVER screen here - Black screen with KingPin RED Text Play Again
+                    DrawRectangle(0, 0, screenWidth, screenHeight, BLACK); //Draws a black rectangle to the size of the screen 
                     DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
-                    DrawTexture(kingpinGameOver, 0, 0, RED);
-                    DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE);
-                    DrawText("GAME OVER", 567, 650, 125, WHITE);
-                    DrawText("PLAY AGAIN?", 725, 925, 50, RED);
+                    DrawTexture(kingpinGameOver, 0, 0, RED);  //Draws this particular asset in red  - for more of a dramtic effect   
+                    DrawTextureRec(blankButton, blankButtonRec, blankButtonPos, WHITE); //Drws the required blank button
+                    DrawText("GAME OVER", 567, 650, 125, WHITE); //Draws text in White Game Over and the position on the x and y coordinates  
+                    DrawText("PLAY AGAIN?", 725, 925, 50, RED); //Draws text in Red Play Again? and the position on the x and y coordinates  
                     
                 }
                     
@@ -553,17 +617,43 @@ switch(currentScreen)
 
 ;
 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
+   // sourced - raylib [core] example - 2d camera - Example used and sourced from - https://www.raylib.com/examples.html 
 
+// Camera rotation controls
+        if (IsKeyDown(KEY_A)) camera.rotation--;
+        else if (IsKeyDown(KEY_S)) camera.rotation++;
 
+        // Limit camera rotation to 80 degrees (-40 to 40)
+        if (camera.rotation > 40) camera.rotation = 40;
+        else if (camera.rotation < -40) camera.rotation = -40;
 
-// If the F key is pressed toggle to Full Screen
+ // Camera zoom controls
+        camera.zoom += ((float)GetMouseWheelMove()*0.05f);
+
+        if (camera.zoom > 3.0f) camera.zoom = 3.0f;
+        else if (camera.zoom < 0.1f) camera.zoom = 0.1f;
+
+        // Camera reset (zoom and rotation)
+        if (IsKeyPressed(KEY_R))
+        {
+            camera.zoom = 1.0f;
+            camera.rotation = 0.0f;
+        }
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// If the F key is pressed toggle to Full Screen  - I added this as a full screen looks better and the user can press it again to turn it off (toggle) by pressing F
     if(IsKeyPressed(KEY_F)) 
     ToggleFullscreen ();
 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// The code below doesn't have an impact on my scenes I din't get to add a charcater
 
     {
-    velocity -= 10;
+    velocity -= 10; // sets velocity - this would be used if I had a charater jumping about
     }
     posY += velocity;
     velocity += gravity;
@@ -576,16 +666,14 @@ switch(currentScreen)
     velocity += gravity;
 
     
-    //ClearBackground(RAYWHITE);
-    DrawTextureV(kingPin, (Vector2) {screenWidth/1, screenHeight/1}, WHITE);
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+   
     EndDrawing();
     
 }
 
-/* constant - fixed not changeable great for Window Height / width 
-const int windowHeight{500};
-const int windowHeight{400};
-*/
+
 
 // Unload  Visuals - good practice to unload visual data - better for memory
 
@@ -598,6 +686,11 @@ UnloadTexture(blankButton);
 UnloadTexture(cityScene);
 UnloadTexture(spidermanFall);
 UnloadTexture(spidermanGameOver);
+
+
+UnloadTexture(midground);   // Unload midground texture
+
+
 
 
 
